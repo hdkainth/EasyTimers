@@ -1,8 +1,8 @@
 class Timer {
-  constructor(props) {
-    this.hh = 0
-    this.mm = 0
-    this.ss = 15
+  constructor(hours = 0, minutes = 0, secs = 15) {
+    this.hh = hours
+    this.mm = minutes
+    this.ss = secs
   }
 
   getTimerString() {

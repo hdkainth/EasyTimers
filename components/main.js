@@ -3,6 +3,7 @@ import {View, FlatList, Text} from "react-native";
 import Header from './Header';
 import AddTimer from './add_timer';
 import Timer from "../timer";
+import TimerList from "../timer_list";
 
 class Main extends Component {
   constructor(props) {
@@ -15,10 +16,10 @@ class Main extends Component {
     this.updateControlRef = this.updateControl.bind(this)
     this.addTimerRef = this.addTimer.bind(this)
 
-    this.timerList = [
-      { name: "Sequence Number ", timer: new Timer(), key: 1 },
-      { name: "Sequence Number ", timer: new Timer(), key: 2 },
-      { name: "Sequence Number ", timer: new Timer(), key: 3 }
+    this.sequenceList = [
+      { name: "Sequence Number ", timer: new TimerList(), key: 1 },
+      { name: "Sequence Number ", timer: new TimerList(), key: 2 },
+      { name: "Sequence Number ", timer: new TimerList(), key: 3 }
     ]
   }
 
@@ -32,15 +33,14 @@ class Main extends Component {
   }
 
   addTimer(seqName) {
-    let newTimer = { name: seqName, timer: new Timer(), key: this.timerList.length + 1}
-    console.log(newTimer)
-    this.timerList.push(newTimer)
+    let newSequence = { name: seqName, timer: new TimerList(), key: this.sequenceList.length + 1}
+    console.log(newSequence)
+    this.sequenceList.push(newSequence)
   }
 
   renderItem = ({ item }) => {return (
     <View style={{padding: 10, borderStyle: 'solid', borderWidth: 1, margin: 5, borderColor: 'black'}}>
       <Text style={{fontSize: 15}}>{item.name}{item.key}</Text>
-      <Text style={{fontSize: 25, color: 'green'}}>{item.timer.getTimerString()}</Text>
     </View>)}
 
   render () {
@@ -54,7 +54,7 @@ class Main extends Component {
     } else {
       mainRender =
         <View style={{ backgroundColor: 'white', height: '100%'}}>
-          <FlatList data={this.timerList} renderItem={this.renderItem} keyExtractor={item => item.key} />
+          <FlatList data={this.sequenceList} renderItem={this.renderItem} keyExtractor={item => item.key}/>
         </View>
    }
 
