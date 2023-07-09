@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, FlatList, Text} from "react-native";
+import {View, FlatList, Text, Image, TouchableOpacity} from "react-native";
 import Header from './Header';
 import AddTimer from './add_timer';
 import Timer from "../timer";
@@ -15,6 +15,7 @@ class Main extends Component {
 
     this.updateControlRef = this.updateControl.bind(this)
     this.addTimerRef = this.addTimer.bind(this)
+    this.handleSequenceEditRef = this.handleSequenceEdit.bind(this)
 
     this.sequenceList = [
       { name: "Sequence Number ", timer: new TimerList(), key: 1 },
@@ -38,9 +39,16 @@ class Main extends Component {
     this.sequenceList.push(newSequence)
   }
 
+  handleSequenceEdit(item) {
+    console.log("Edit Button Pressed! for seq " + item.key)
+  }
+
   renderItem = ({ item }) => {return (
-    <View style={{padding: 10, borderStyle: 'solid', borderWidth: 1, margin: 5, borderColor: 'black'}}>
+    <View style={{padding: 10, borderStyle: 'solid', borderWidth: 1, margin: 5, borderColor: 'black', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
       <Text style={{fontSize: 15}}>{item.name}{item.key}</Text>
+      <TouchableOpacity onPress={() => this.handleSequenceEditRef(item)}>
+        <Image style={{height: 25, aspectRatio: 1}} source={require('../assets/edit_icon.png')}/>
+      </TouchableOpacity>
     </View>)}
 
   render () {
