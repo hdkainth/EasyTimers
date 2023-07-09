@@ -4,11 +4,11 @@ import React from "react";
 
 class TimerList {
   constructor() {
-    this.timerList = [
-      { name: "Timer Number ", timer: new Timer(), key: 1},
-      { name: "Timer Number ", timer: new Timer(0, 10, 30), key: 2},
-      { name: "Timer Number ", timer: new Timer(5, 0, 0), key: 3 }
-    ]
+    this.timerList = []
+  }
+
+  addTimer(timer) {
+    this.timerList.push(timer)
   }
 
   renderItem = ({ item }) => {return (
