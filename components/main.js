@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 import {View, FlatList, Text, Image, TouchableOpacity} from "react-native";
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Header from './Header';
 import AddTimer from './add_timer';
 import Timer from "../timer";
@@ -17,7 +19,9 @@ class Main extends Component {
 
     this.updateControlRef = this.updateControl.bind(this)
     this.addTimerRef = this.addTimer.bind(this)
-    this.handleSequenceEditRef = this.handleSequenceEdit.bind(this)
+    this.handleSeqPressRef = this.handleSeqPress.bind(this)
+    this.handleSeqLeftSwipeRef = this.handleSeqLeftSwipe.bind(this)
+    this.handleSeqRightSwipeRef = this.handleSeqRightSwipe.bind(this)
 
     this.sequenceList = [
       { name: "Short strenching ", timer: new TimerList(), key: 1 },
@@ -57,32 +61,49 @@ class Main extends Component {
     this.sequenceList.push(newSequence)
   }
 
-  handleSequenceEdit(item) {
-    console.log("Edit Button Pressed! for seq index " + item.index + " key " + item.item.key)
+  handleSeqLeftSwipe(item) {
+    // console.log("Swipe left! for seq index " + item.index + " key " + item.item.key)
+    return (
+      <View>
+        <Image style={{height: 30, aspectRatio: 1}} source={require('../assets/edit_icon.png')}/>
+      </View>
+    )
+  }
+  handleSeqRightSwipe(item) {
+    // console.log("Swipe right! for seq index " + item.index + " key " + item.item.key)
+    return (
+      <View>
+        <Image style={{height: 30, aspectRatio: 1}} source={require('../assets/trash_icon.jpg')}/>
+      </View>
+    )
+  }
+  handleSeqPress(item) {
+    console.log("Pressed! for seq index " + item.index + " key " + item.item.key)
   }
 
   render () {
 
-    function renderTimerSeq(item, seqEditHandler) {
+    function renderTimerSeq(item, pressHandler, swipeLeftHandler, swipeRightHandler) {
       timerSeq = item.item
       return (
         <View style={ timerSeqListStyle.timerSeqItem }>
-          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-            <AutoSizeText style={{ color: 'black' }} mode={ResizeTextMode.group}>
-              {timerSeq.name}
-            </AutoSizeText>
-            <TouchableOpacity onPress={() => seqEditHandler(item)}>
-              <Image style={{height: 25, aspectRatio: 1}} source={require('../assets/edit_icon.png')}/>
-            </TouchableOpacity>
-          </View>
+          <GestureHandlerRootView>
+            <Swipeable renderLeftActions={() => swipeLeftHandler(item)} renderRightActions={() => swipeRightHandler(item)}>
+              <TouchableOpacity onPress={() => pressHandler(item)}>
+                <AutoSizeText style={{ color: 'black' }} mode={ResizeTextMode.group}>
+                  {timerSeq.name}
+                </AutoSizeText>
+              </TouchableOpacity>
+            </Swipeable>
+          </GestureHandlerRootView>
         </View>
       )
     }
 
-    function renderTimerSeqList(timerSeqList, seqEditHandler) {
+    function renderTimerSeqList(timerSeqList, pressHandler, swipeLeftHandler, swipeRightHandler) {
       return (
         <View style={ timerSeqListStyle.container }>
-          <FlatList data={timerSeqList} renderItem={(item) => renderTimerSeq(item, seqEditHandler)} keyExtractor={item => item.key}/>
+          <FlatList data={timerSeqList} renderItem={(item) => renderTimerSeq(item, pressHandler, swipeLeftHandler, swipeRightHandler)} keyExtractor={item => item.key}/>
         </View>
       )
     }
@@ -94,7 +115,7 @@ class Main extends Component {
           <AddTimer addTimer={this.addTimerRef} control={this.updateControlRef}/>
         </View>
     } else {
-      mainRender = renderTimerSeqList(this.sequenceList, this.handleSequenceEditRef)
+      mainRender = renderTimerSeqList(this.sequenceList, this.handleSeqPressRef, this.handleSeqLeftSwipeRef, this.handleSeqRightSwipeRef)
    }
 
     return (
