@@ -1,14 +1,14 @@
 import React, {Component} from 'react'
 import {View} from 'react-native'
 
-class AddTimer extends Component {
+class AddSequence extends Component {
   constructor(props) {
     super(props);
 
     console.log("creating add timer")
 
-    props.control("addTimer", false)
-    props.addTimer("Sequence Number new ")
+    props.control("addSequence", false)
+    props.addSequence("Sequence Number new ")
 
   }
 
@@ -20,5 +20,5 @@ class AddTimer extends Component {
   }
 }
 
-export default AddTimer
+export default AddSequence
 

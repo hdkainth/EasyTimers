@@ -4,7 +4,7 @@ import {View, FlatList, Text, Image, TouchableOpacity} from "react-native";
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Header from './Header';
-import AddTimer from './add_timer';
+import AddSequence from './add_sequence';
 import Timer from "../timer";
 import TimerList from "../timer_list";
 import { mainStyle, timerSeqListStyle } from '../css/main';
@@ -14,14 +14,17 @@ class Main extends Component {
     super(props);
 
     this.state = {
-      addTimer: false
+      addSequence: false,
+      sequenceDeleted: false
     }
 
     this.updateControlRef = this.updateControl.bind(this)
-    this.addTimerRef = this.addTimer.bind(this)
+    this.addSequenceRef = this.addSequence.bind(this)
     this.handleSeqPressRef = this.handleSeqPress.bind(this)
     this.handleSeqLeftSwipeRef = this.handleSeqLeftSwipe.bind(this)
     this.handleSeqRightSwipeRef = this.handleSeqRightSwipe.bind(this)
+    this.editSequenceRef = this.editSequence.bind(this)
+    this.deleteSequenceRef = this.deleteSequence.bind(this)
 
     this.sequenceList = [
       { name: "Short strenching ", timer: new TimerList(), key: 1 },
@@ -55,7 +58,20 @@ class Main extends Component {
     )
   }
 
-  addTimer(seqName) {
+  editSequence(item) {
+    console.log("Edit Sequence Button Pressed! for index " + item.index + " key " + item.item.key)
+  }
+
+  deleteSequence(item) {
+    console.log("Delete Sequence Button Pressed! for index " + item.index + " key " + item.item.key)
+    this.sequenceList.splice(item.index, 1)
+    this.setState({
+        sequenceDeleted: true
+      }
+    )
+  }
+
+  addSequence(seqName) {
     let newSequence = { name: seqName, timer: new TimerList(), key: this.sequenceList.length + 1}
     console.log(newSequence)
     this.sequenceList.push(newSequence)
@@ -65,7 +81,9 @@ class Main extends Component {
     // console.log("Swipe left! for seq index " + item.index + " key " + item.item.key)
     return (
       <View>
-        <Image style={{height: 30, aspectRatio: 1}} source={require('../assets/edit_icon.png')}/>
+        <TouchableOpacity onPress={() => this.editSequenceRef(item)}>
+          <Image style={{height: 20, aspectRatio: 1, marginRight: 5}} source={require('../assets/edit_icon.png')}/>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -73,7 +91,9 @@ class Main extends Component {
     // console.log("Swipe right! for seq index " + item.index + " key " + item.item.key)
     return (
       <View>
-        <Image style={{height: 30, aspectRatio: 1}} source={require('../assets/trash_icon.jpg')}/>
+        <TouchableOpacity onPress={() => this.deleteSequenceRef(item)}>
+          <Image style={{height: 30, aspectRatio: 1}} source={require('../assets/trash_icon.jpg')}/>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -84,7 +104,7 @@ class Main extends Component {
   render () {
 
     function renderTimerSeq(item, pressHandler, swipeLeftHandler, swipeRightHandler) {
-      timerSeq = item.item
+      let timerSeq = item.item
       return (
         <View style={ timerSeqListStyle.timerSeqItem }>
           <GestureHandlerRootView>
@@ -112,10 +132,11 @@ class Main extends Component {
     if (this.state.addTimer == true) {
       mainRender =
         <View>
-          <AddTimer addTimer={this.addTimerRef} control={this.updateControlRef}/>
+          <AddSequence addSequence={this.addSequenceRef} control={this.updateControlRef}/>
         </View>
     } else {
       mainRender = renderTimerSeqList(this.sequenceList, this.handleSeqPressRef, this.handleSeqLeftSwipeRef, this.handleSeqRightSwipeRef)
+      this.state.sequenceDeleted = false
    }
 
     return (
