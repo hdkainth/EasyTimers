@@ -11,14 +11,19 @@ class TimerList {
     this.timerList.push(timer)
   }
 
-  renderItem = ({ item }) => {return (
+  renderItem = ({ item }) => {
+    console.log(item)
+    return (
     <View>
-      <Text style={{fontSize: 25, color: 'green'}}>{item.timer.getTimerString()}</Text>
-    </View>)}
+      <Text style={{fontSize: 25, color: 'green', borderStyle: 'solid', margin: 5, padding: 10, borderWidth: 1}}>
+        {item.name} : {item.getTimerString()}
+      </Text>
+    </View>)
+  }
 
   printTimerList() {
     return (
-      <View style={{ backgroundColor: 'white', height: '100%'}}>
+      <View style={{ backgroundColor: 'white'}}>
         <FlatList data={this.timerList} renderItem={this.renderItem} keyExtractor={item => item.key} />
       </View>
     )

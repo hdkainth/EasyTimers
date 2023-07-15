@@ -14,7 +14,7 @@ class Header extends Component {
 
   handleOnPress() {
     console.log("Pressed key")
-    this.control("addTimer", true)
+    this.control("addSequence", true)
   }
 
   render() {

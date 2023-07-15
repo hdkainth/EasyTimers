@@ -7,6 +7,7 @@ import Header from './Header';
 import AddSequence from './add_sequence';
 import Timer from "../timer";
 import TimerList from "../timer_list";
+import EditSequence from "./edit_sequence";
 import { mainStyle, timerSeqListStyle } from '../css/main';
 
 class Main extends Component {
@@ -15,9 +16,11 @@ class Main extends Component {
 
     this.state = {
       addSequence: false,
-      sequenceDeleted: false
+      sequenceDeleted: false,
+      editSequence: false
     }
 
+    this.editSequenceItem = undefined
     this.updateControlRef = this.updateControl.bind(this)
     this.addSequenceRef = this.addSequence.bind(this)
     this.handleSeqPressRef = this.handleSeqPress.bind(this)
@@ -60,6 +63,11 @@ class Main extends Component {
 
   editSequence(item) {
     console.log("Edit Sequence Button Pressed! for index " + item.index + " key " + item.item.key)
+    this.editSequenceItem = item
+    this.setState({
+        editSequence: true
+      }
+    )
   }
 
   deleteSequence(item) {
@@ -129,10 +137,15 @@ class Main extends Component {
     }
 
     let mainRender = <View></View>
-    if (this.state.addTimer == true) {
+    if (this.state.addSequence == true) {
       mainRender =
         <View>
           <AddSequence addSequence={this.addSequenceRef} control={this.updateControlRef}/>
+        </View>
+    } else if (this.state.editSequence == true) {
+      mainRender =
+        <View>
+          <EditSequence control={this.updateControlRef} item={this.editSequenceItem}/>
         </View>
     } else {
       mainRender = renderTimerSeqList(this.sequenceList, this.handleSeqPressRef, this.handleSeqLeftSwipeRef, this.handleSeqRightSwipeRef)
