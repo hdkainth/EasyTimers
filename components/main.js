@@ -15,10 +15,17 @@ class Main extends Component {
     super(props);
 
     this.state = {
+      // temp add sequence to show default added new sequence
       addSequence: false,
+      // temp timer in edit mode
+      addTimer: false,
+      // refresh screen after sequence is deleted
       sequenceDeleted: false,
+      // control switch between main screen and edit sequence screen
       editSequence: false
     }
+
+    this.headerRef = React.createRef();
 
     this.editSequenceItem = undefined
     this.updateControlRef = this.updateControl.bind(this)
@@ -52,9 +59,23 @@ class Main extends Component {
     this.sequenceList[2].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 10, name = "Push ups"))
   }
 
+  componentDidMount() {
+    console.log('ComponentDidMount ' + this.headerRef.current)
+    this.headerRef.current.setPlusMode(Header.PLUS_MODE_ADD_SEQ)
+  }
+
   updateControl(key, newValue) {
     console.log("Received update key " + key)
     console.log("Received update value " + newValue)
+
+    if (key == 'editSequence') {
+      if (newValue == true) {
+        this.headerRef.current.setPlusMode(Header.PLUS_MODE_ADD_TIMER)
+      } else {
+        this.headerRef.current.setPlusMode(Header.PLUS_MODE_ADD_SEQ)
+      }
+    }
+
     this.setState({
         [key]: newValue
       }
@@ -64,19 +85,13 @@ class Main extends Component {
   editSequence(item) {
     console.log("Edit Sequence Button Pressed! for index " + item.index + " key " + item.item.key)
     this.editSequenceItem = item
-    this.setState({
-        editSequence: true
-      }
-    )
+    this.updateControl('editSequence', true)
   }
 
   deleteSequence(item) {
     console.log("Delete Sequence Button Pressed! for index " + item.index + " key " + item.item.key)
     this.sequenceList.splice(item.index, 1)
-    this.setState({
-        sequenceDeleted: true
-      }
-    )
+    this.updateControl('sequenceDeleted', true)
   }
 
   addSequence(seqName) {
@@ -136,13 +151,19 @@ class Main extends Component {
       )
     }
 
-    let mainRender = <View></View>
     if (this.state.addSequence == true) {
-      mainRender =
-        <View>
-          <AddSequence addSequence={this.addSequenceRef} control={this.updateControlRef}/>
-        </View>
-    } else if (this.state.editSequence == true) {
+      console.log("Adding new sequence")
+      this.addSequence("Sequence Number new")
+      this.state.addSequence = false;
+    }
+    if (this.state.addTimer == true) {
+      console.log("Adding new timer" + JSON.stringify(this.editSequenceItem))
+      this.editSequenceItem.item.timer.addTimer(new Timer())
+      this.state.addTimer = false;
+    }
+
+    let mainRender = <View></View>
+    if (this.state.editSequence == true) {
       mainRender =
         <View>
           <EditSequence control={this.updateControlRef} item={this.editSequenceItem}/>
@@ -150,12 +171,12 @@ class Main extends Component {
     } else {
       mainRender = renderTimerSeqList(this.sequenceList, this.handleSeqPressRef, this.handleSeqLeftSwipeRef, this.handleSeqRightSwipeRef)
       this.state.sequenceDeleted = false
-   }
+    }
 
     return (
       <View style={ mainStyle.container }>
         <View style={ mainStyle.headerBox }>
-          <Header control={this.updateControlRef}/>
+          <Header ref={this.headerRef} control={this.updateControlRef}/>
         </View>
         <View style={ mainStyle.mainContentBox }>
           { mainRender }

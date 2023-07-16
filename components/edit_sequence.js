@@ -9,14 +9,12 @@ class EditSequence extends Component {
     super(props);
 
     this.control = props.control
-
-    this.handleOnPressRef = this.handleOnPress.bind(this)
-
+    this.handleOnPressBackRef = this.handleOnPressBack.bind(this)
   }
 
-  handleOnPress() {
+  handleOnPressBack() {
     console.log("Pressed back key")
-    this.control("editSequence", false)
+    this.control('editSequence', false)
   }
 
   render() {
@@ -26,7 +24,7 @@ class EditSequence extends Component {
       <View>
         {this.props.item.item.timer.printTimerList()}
         <View style={{padding: 10}}>
-          <Button title="Back" onPress={this.handleOnPressRef}/>
+          <Button title="Back" onPress={this.handleOnPressBackRef}/>
         </View>
       </View>
     )

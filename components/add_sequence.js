@@ -7,9 +7,8 @@ class AddSequence extends Component {
 
     console.log("creating add timer")
 
-    props.control("addSequence", false)
     props.addSequence("Sequence Number new ")
-
+    this.control('addSequence', false)
   }
 
   render () {
