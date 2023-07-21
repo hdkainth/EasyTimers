@@ -4,7 +4,6 @@ import {View, FlatList, Text, Image, TouchableOpacity} from "react-native";
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Header from './Header';
-import AddSequence from './add_sequence';
 import Timer from "../timer";
 import TimerList from "../timer_list";
 import EditSequence from "./edit_sequence";
@@ -29,7 +28,6 @@ class Main extends Component {
 
     this.editSequenceItem = undefined
     this.updateControlRef = this.updateControl.bind(this)
-    this.addSequenceRef = this.addSequence.bind(this)
     this.handleSeqPressRef = this.handleSeqPress.bind(this)
     this.handleSeqLeftSwipeRef = this.handleSeqLeftSwipe.bind(this)
     this.handleSeqRightSwipeRef = this.handleSeqRightSwipe.bind(this)
@@ -55,7 +53,7 @@ class Main extends Component {
 
     this.sequenceList[2].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 30, name = "Push - Barbell bench press"))
     this.sequenceList[2].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 15, name = "Pull - Barbell deadlift"))
-    this.sequenceList[2].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 20, name = "Legs. Barbell squats"))
+    this.sequenceList[2].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 20, name = "Legs - Barbell squats"))
     this.sequenceList[2].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 10, name = "Push ups"))
   }
 
