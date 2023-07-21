@@ -1,8 +1,9 @@
 class Timer {
-  constructor(hours = 0, minutes = 0, secs = 15) {
+  constructor(hours = 0, minutes = 0, secs = 15, name = "default") {
     this.hh = hours
     this.mm = minutes
     this.ss = secs
+    this.name=name
 
     this.intervalId = undefined
     this.timerElapsed = 0
