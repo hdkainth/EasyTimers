@@ -5,6 +5,8 @@ class Timer {
     this.ss = secs
     this.name=name
 
+    this.key = undefined
+
     this.intervalId = undefined
     this.timerElapsed = 0
 

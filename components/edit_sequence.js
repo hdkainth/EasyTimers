@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {View, Button, Modal, TextInput} from 'react-native'
 import { Formik } from 'formik';
+import TimerList from "../timer_list";
 
 
 class EditSequence extends Component {
@@ -9,7 +10,8 @@ class EditSequence extends Component {
 
     this.state = {
       sequencePopup: false,
-      timerPopup: false
+      timerPopup: false,
+      refresh : false
     }
 
     this.control = props.control
@@ -17,6 +19,9 @@ class EditSequence extends Component {
     this.handleSequencePopupRef = this.handleSequencePopup.bind(this)
     this.handleSequencePopupCancelRef = this.handleSequencePopupCancel.bind(this)
     this.editSequenceNameRef = this.editSequenceName.bind(this)
+    this.refreshSequenceRef = this.refreshSequence.bind(this)
+
+    this.props.item.item.timer.setRefreshHandler(this.refreshSequenceRef)
   }
 
   editSequenceName(newName) {
@@ -40,6 +45,13 @@ class EditSequence extends Component {
     this.control('editSequence', false)
   }
 
+  refreshSequence() {
+    this.setState({
+      refresh: true
+    })
+
+  }
+
   render() {
     //console.log(this.props.item.item.timer)
     //this.props.item.item.timer.timerList.forEach(thisTimer => console.log(thisTimer.name))
@@ -52,7 +64,7 @@ class EditSequence extends Component {
               <Formik initialValues={{name: '' }} onSubmit={(values) => {this.editSequenceNameRef(values.name)}}>
                 {(props) => (
                   <View style={{marginBottom: 10}}>
-                    <TextInput style={{borderWidth: 1, borderColor: 'black', borderRadius: 5, padding: 5}}
+                    <TextInput style={{borderWidth: 1, borderColor: 'black', borderRadius: 5, padding: 5, margin: 10}}
                                placeholder='New Sequence Name' onChangeText={props.handleChange('name')} value={props.values.name}/>
                     <Button title="Submit" onPress={props.handleSubmit}/>
                   </View>
@@ -63,7 +75,7 @@ class EditSequence extends Component {
             </View>
           </View>
         </Modal>
-        {this.props.item.item.timer.printTimerList()}
+        {this.props.item.item.timer.render()}
         <View style={{padding: 10}}>
           <Button title="Back" onPress={this.handleOnPressBackRef}/>
         </View>
