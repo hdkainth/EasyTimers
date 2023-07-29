@@ -6,7 +6,6 @@ class Timer {
     this.name=name
 
     this.key = undefined
-
     this.intervalId = undefined
     this.timerElapsed = 0
 
@@ -14,7 +13,22 @@ class Timer {
   }
 
   getTimerString() {
-    return "" + this.hh + ":" + this.mm + ":" + this.ss
+    let displayMinutes = ""
+    if (this.mm < 10) {
+      displayMinutes = "0" + this.mm
+    } else {
+      displayMinutes = this.mm
+    }
+
+    let displaySeconds = ""
+    if (this.ss < 10) {
+      displaySeconds = "0" + this.ss
+    } else {
+      displaySeconds = this.ss
+    }
+
+
+    return "" + this.hh + ":" + displayMinutes + ":" + displaySeconds
   }
 
   decrementTimeSec() {

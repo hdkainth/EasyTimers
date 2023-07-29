@@ -15,7 +15,11 @@ class TimerList extends Component {
     this.deleteTimerRef = this.deleteTimer.bind(this)
     this.handleTimerLeftSwipeRef = this.handleTimerLeftSwipe.bind(this)
     this.handleTimerRightSwipeRef = this.handleTimerRightSwipe.bind(this)
+    this.changeTimerValuesRef = this.changeTimerValues.bind(this)
     this.refreshHandler = undefined
+    this.editTimerHandler = undefined
+
+    this.timerToEdit = undefined
   }
 
   addTimer(timer) {
@@ -28,6 +32,17 @@ class TimerList extends Component {
 
   editTimer(item) {
     console.log("Pressed edit timer for index " + item.index + " key " + item.item.key)
+    this.timerToEdit = item
+    this.editTimerHandler()
+  }
+
+  changeTimerValues(values) {
+    this.timerToEdit.item.name = values.name
+
+    this.timerToEdit.item.hh = values.hour.split(" ").join("")
+    this.timerToEdit.item.mm = values.min.split(" ").join("")
+    this.timerToEdit.item.ss = values.sec.split(" ").join("")
+
   }
 
   deleteTimer(item) {
@@ -40,6 +55,10 @@ class TimerList extends Component {
 
   setRefreshHandler(refreshHandler) {
     this.refreshHandler = refreshHandler
+  }
+
+  setEditTimerHandler(editTimerHandler) {
+    this.editTimerHandler = editTimerHandler
   }
 
   handleTimerLeftSwipe(item) {
@@ -65,7 +84,7 @@ class TimerList extends Component {
   }
 
   renderItem(item, handleLeftSwipe, handleRightSwipe) {
-    console.log(item)
+    //console.log(item)
     return (
       <View style={{borderStyle: 'solid', margin: 5, padding: 10, borderWidth: 1}}>
         <GestureHandlerRootView>
