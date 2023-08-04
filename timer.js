@@ -33,7 +33,7 @@ class Timer {
 
   decrementTimeSec() {
     this.timerElapsed++;
-    console.log((this.getTimerSeconds() - this.timerElapsed) + " seconds left")
+    console.log((this.getTimeString()))
     if (this.timerElapsed == this.getTimerSeconds()) {
       clearInterval(this.intervalId)
     }
@@ -66,6 +66,28 @@ class Timer {
       (3600 * this.hh) + (60 * this.mm) + (this.ss)
     )
   }
+
+  getTimeString() {
+    let timeLeft = this.getTimerSeconds() - this.timerElapsed
+
+    let secondsLeft = timeLeft % 60
+
+    timeLeft = timeLeft / 60
+    let minutesLeft = timeLeft % 60
+    timeLeft = timeLeft / 60
+    let hoursLeft = timeLeft
+
+    if (minutesLeft < 10) {
+      minutesLeft = "0" + this.mm
+    }
+    if (secondsLeft < 10) {
+      secondsLeft = "0" + this.mm
+    }
+
+    return "" + hoursLeft + ":" + minutesLeft + ":" + secondsLeft
+
+  }
+
 }
 
 export default Timer
