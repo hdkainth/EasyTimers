@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
-import {View, FlatList, Text, TouchableOpacity, Image} from "react-native";
-import Timer from "./timer";
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import {ScrollView, View, FlatList, Text, TouchableOpacity, Image} from "react-native";
+import TimerView from './components/TimerView';
 import {timerSeqListStyle} from "./css/main";
 
 class TimerList extends Component {
@@ -13,13 +11,15 @@ class TimerList extends Component {
 
     this.editTimerRef = this.editTimer.bind(this)
     this.deleteTimerRef = this.deleteTimer.bind(this)
-    this.handleTimerLeftSwipeRef = this.handleTimerLeftSwipe.bind(this)
-    this.handleTimerRightSwipeRef = this.handleTimerRightSwipe.bind(this)
+    // this.handleTimerLeftSwipeRef = this.handleTimerLeftSwipe.bind(this)
+    // this.handleTimerRightSwipeRef = this.handleTimerRightSwipe.bind(this)
     this.changeTimerValuesRef = this.changeTimerValues.bind(this)
+    this.timerCompleteNotifyRef = this.timerCompleteNotify.bind(this)
     this.refreshHandler = undefined
     this.editTimerHandler = undefined
 
     this.timerToEdit = undefined
+    this.activeTimer = undefined
   }
 
   addTimer(timer) {
@@ -45,11 +45,28 @@ class TimerList extends Component {
 
   }
 
-  deleteTimer(item) {
-    console.log("Pressed delete timer for index " + item.index + " key " + item.item.key)
-    this.timerList.splice(item.index, 1)
+  deleteTimer(timerRef) {
+    index = this.timerList.indexOf(timerRef)
+    console.log("Pressed delete timer for index " + index)
+    this.timerList.splice(index, 1)
     if (this.refreshHandler != undefined) {
       this.refreshHandler()
+    }
+  }
+
+  playList() {
+    this.activeTimer = 0
+    if (this.activeTimer < this.timerList.length) {
+      this.timerList[this.activeTimer].startTimer(this.timerCompleteNotifyRef)
+    }
+  }
+
+  timerCompleteNotify() {
+    this.activeTimer = this.activeTimer + 1
+    if (this.activeTimer == this.timerList.length) {
+      this.activeTimer = undefined
+    } else {
+      this.timerList[this.activeTimer].startTimer(this.timerCompleteNotifyRef)
     }
   }
 
@@ -61,53 +78,18 @@ class TimerList extends Component {
     this.editTimerHandler = editTimerHandler
   }
 
-  handleTimerLeftSwipe(item) {
-    // console.log("Swipe left! for seq index " + item.index + " key " + item.item.key)
-    return (
-      <View>
-        <TouchableOpacity onPress={() => this.editTimerRef(item)}>
-          <Image style={{height: 20, aspectRatio: 1, marginRight: 5}} source={require('./assets/edit_icon.png')}/>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-
-  handleTimerRightSwipe(item) {
-    // console.log("Swipe right! for seq index " + item.index + " key " + item.item.key)
-    return (
-      <View>
-        <TouchableOpacity onPress={() => this.deleteTimerRef(item)}>
-          <Image style={{height: 30, aspectRatio: 1}} source={require('./assets/trash_icon.jpg')}/>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-
-  renderItem(item, handleLeftSwipe, handleRightSwipe) {
-    //console.log(item)
-    return (
-      <View style={{borderStyle: 'solid', margin: 5, padding: 10, borderWidth: 1}}>
-        <GestureHandlerRootView>
-          <Swipeable renderLeftActions={() => handleLeftSwipe(item)} renderRightActions={() => handleRightSwipe(item)}>
-            <TouchableOpacity>
-              <Text style={{fontSize:20, color: 'black'}}>
-                {item.item.name}: {item.item.getTimerString()}
-              </Text>
-            </TouchableOpacity>
-          </Swipeable>
-        </GestureHandlerRootView>
-      </View>)
+  renderItem(item) {
+    return <TimerView timer={item.item} notifyDel={this.deleteTimerRef}/>
   }
 
   render() {
-    return this.printTimerList()
-  }
-
-  printTimerList() {
     return (
-      <View style={{ backgroundColor: 'white'}}>
-        <FlatList data={this.timerList} renderItem={(item) => this.renderItem(item, this.handleTimerLeftSwipeRef, this.handleTimerRightSwipeRef)} keyExtractor={item => item.key} />
-      </View>
+      <ScrollView style={{ backgroundColor: 'white'}}>
+        <FlatList data={this.timerList}
+          renderItem={(item) => this.renderItem(item)}
+          keyExtractor={item => item.key}
+        />
+      </ScrollView>
     )
   }
 }

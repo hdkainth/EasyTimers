@@ -1,18 +1,23 @@
 import React, {Component} from 'react'
 import {View, Button, Modal, TextInput} from 'react-native'
 import { Formik } from 'formik';
-import TimerList from "../timer_list";
-
+import TimerView from './TimerView';
+import TimerListView from './TimerListView';
 
 class EditSequence extends Component {
   constructor(props) {
     super(props);
+
+    console.log("In Edit seq const")
 
     this.state = {
       sequencePopup: false,
       timerPopup: false,
       refresh : false
     }
+
+    this.editTimerRef = undefined
+    this.timerListViewRef = React.createRef()
 
     this.control = props.control
     this.handleOnPressBackRef = this.handleOnPressBack.bind(this)
@@ -25,8 +30,8 @@ class EditSequence extends Component {
     this.handleTimerPopupCancelRef = this.handleTimerPopupCancel.bind(this)
 
 
-    this.props.item.item.timer.setRefreshHandler(this.refreshSequenceRef)
-    this.props.item.item.timer.setEditTimerHandler(this.handleTimerPopupRef)
+    this.props.timerSeq.timerList.setRefreshHandler(this.refreshSequenceRef)
+    this.props.timerSeq.timerList.setEditTimerHandler(this.handleTimerPopupRef)
 
     this.editBoxBorderColor = {
       hour: 'black',
@@ -35,9 +40,14 @@ class EditSequence extends Component {
     }
   }
 
+  componentWillUnmount() {
+    console.log("Edit Seq component is unmounting")
+    TimerView.activeSwipeRef = undefined
+  }
+
   editSequenceName(newName) {
     console.log("New Name: " + newName)
-    this.props.item.item.name = newName
+    this.props.timerSeq.name = newName
     this.setState({sequencePopup: false})
   }
 
@@ -48,7 +58,7 @@ class EditSequence extends Component {
     if (Number.isInteger(parseInt(values.hour)) && Number.isInteger(parseInt(values.min)) && Number.isInteger(parseInt(values.sec))) {
       if ((parseInt(values.min.split(" ").join("")) < 60) && (parseInt(values.min.split(" ").join("")) >= 0) && (parseInt(values.sec) < 60) && (parseInt(values.sec.split(" ").join("")) >= 0)) {
         console.log(values)
-        this.props.item.item.timer.changeTimerValuesRef(values)
+        this.timerListViewRef.current.changeTimerValuesRef(values)
         this.setState({
           timerPopup: false,
           refresh : true
@@ -78,11 +88,6 @@ class EditSequence extends Component {
         refresh : true
       })
     }
-
-
-
-
-
   }
 
   handleTimerPopupCancel() {
@@ -119,8 +124,7 @@ class EditSequence extends Component {
   }
 
   render() {
-    //console.log(this.props.item.item.timer)
-    //this.props.item.item.timer.timerList.forEach(thisTimer => console.log(thisTimer.name))
+    //console.log(this.props.timerSeq.timerList)
     return (
 
       <View>
@@ -165,8 +169,14 @@ class EditSequence extends Component {
           </View>
         </Modal>
 
+        <View style={{height: '80%', width: '100%'}}>
+          <TimerListView ref={this.timerListViewRef}
+            name={this.props.timerSeq.name}
+            timerList={this.props.timerSeq.timerList}
+            notifyEdit={this.handleTimerPopupRef}
+          />
+        </View>
 
-        {this.props.item.item.timer.render()}
         <View style={{padding: 10}}>
           <Button title="Back" onPress={this.handleOnPressBackRef}/>
         </View>

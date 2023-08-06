@@ -1,60 +1,39 @@
 import React, {Component} from 'react'
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 import {View, FlatList, Text, Image, TouchableOpacity} from "react-native";
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Header from './Header';
 import Timer from "../timer";
 import TimerList from "../timer_list";
 import EditSequence from "./edit_sequence";
 import { mainStyle, timerSeqListStyle } from '../css/main';
+import TimerSeqView from './TimerSeqView';
+import TimerSeqList from '../timer_seq_list';
+import TimerSeqListView from './TimerSeqListView';
+import TimerSeqPlayView from './TimerSeqPlayView';
 
 class Main extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      // temp add sequence to show default added new sequence
-      addSequence: false,
       // temp timer in edit mode
       addTimer: false,
-      // refresh screen after sequence is deleted
-      sequenceDeleted: false,
       // control switch between main screen and edit sequence screen
-      editSequence: false
+      editSequence: false,
+      // control switch between main screen and select sequence screen to play timer
+      selectSequence: false
     }
 
     this.headerRef = React.createRef();
 
+    this.sequenceList = new TimerSeqList()
+    this.sequenceListViewRef = React.createRef()
+
     this.editSequenceItem = undefined
+    this.selectSequenceItem = undefined
     this.updateControlRef = this.updateControl.bind(this)
-    this.handleSeqPressRef = this.handleSeqPress.bind(this)
-    this.handleSeqLeftSwipeRef = this.handleSeqLeftSwipe.bind(this)
-    this.handleSeqRightSwipeRef = this.handleSeqRightSwipe.bind(this)
     this.editSequenceRef = this.editSequence.bind(this)
-    this.deleteSequenceRef = this.deleteSequence.bind(this)
-
-    this.sequenceList = [
-      { name: "Short strenching ", timer: new TimerList(), key: 1 },
-      { name: "Yoga ", timer: new TimerList(), key: 2 },
-      { name: "Gym workout ", timer: new TimerList(), key: 3 }
-    ]
-
-    this.sequenceList[0].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 15, name = "Arm stretch"))
-    this.sequenceList[0].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 5, name = "Relax"))
-    this.sequenceList[0].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 15, name = "Leg stretch"))
-
-    this.sequenceList[1].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 30, name = "Child pose"))
-    this.sequenceList[1].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 30, name = "Cobra pose"))
-    this.sequenceList[1].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 45, name = "Child pose"))
-    this.sequenceList[1].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 30, name = "Downward facing dog"))
-    this.sequenceList[1].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 30, name = "Standing forward bend"))
-    this.sequenceList[1].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 45, name = "Bridge pose"))
-
-    this.sequenceList[2].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 30, name = "Push - Barbell bench press"))
-    this.sequenceList[2].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 15, name = "Pull - Barbell deadlift"))
-    this.sequenceList[2].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 20, name = "Legs - Barbell squats"))
-    this.sequenceList[2].timer.addTimer(new Timer(hours = 0, minutes = 0, secs = 10, name = "Push ups"))
+    this.selectSequenceRef = this.selectSequence.bind(this)
   }
 
   componentDidMount() {
@@ -80,95 +59,48 @@ class Main extends Component {
     )
   }
 
-  editSequence(item) {
-    console.log("Edit Sequence Button Pressed! for index " + item.index + " key " + item.item.key)
-    this.editSequenceItem = item
+  addSequence(seqName) {
+    console.log("Handling adding seq in main " + seqName)
+    this.sequenceListViewRef.current.addSequence(seqName)
+  }
+
+  editSequence(timerSeqRef) {
+    this.editSequenceItem = timerSeqRef
     this.updateControl('editSequence', true)
   }
 
-  deleteSequence(item) {
-    console.log("Delete Sequence Button Pressed! for index " + item.index + " key " + item.item.key)
-    this.sequenceList.splice(item.index, 1)
-    this.updateControl('sequenceDeleted', true)
-  }
-
-  addSequence(seqName) {
-    let newSequence = { name: seqName, timer: new TimerList(), key: this.sequenceList.length + 1}
-    console.log(newSequence)
-    this.sequenceList.push(newSequence)
-  }
-
-  handleSeqLeftSwipe(item) {
-    // console.log("Swipe left! for seq index " + item.index + " key " + item.item.key)
-    return (
-      <View>
-        <TouchableOpacity onPress={() => this.editSequenceRef(item)}>
-          <Image style={{height: 20, aspectRatio: 1, marginRight: 5}} source={require('../assets/edit_icon.png')}/>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-  handleSeqRightSwipe(item) {
-    // console.log("Swipe right! for seq index " + item.index + " key " + item.item.key)
-    return (
-      <View>
-        <TouchableOpacity onPress={() => this.deleteSequenceRef(item)}>
-          <Image style={{height: 30, aspectRatio: 1}} source={require('../assets/trash_icon.jpg')}/>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-  handleSeqPress(item) {
-    console.log("Pressed! for seq index " + item.index + " key " + item.item.key)
+  selectSequence(timerSeqRef) {
+    //console.log("Selecting timerSeq " + JSON.stringify(timerSeqRef))
+    this.selectSequenceItem = timerSeqRef
+    this.updateControl('selectSequence', true)
   }
 
   render () {
-
-    function renderTimerSeq(item, pressHandler, swipeLeftHandler, swipeRightHandler) {
-      let timerSeq = item.item
-      return (
-        <View style={ timerSeqListStyle.timerSeqItem }>
-          <GestureHandlerRootView>
-            <Swipeable renderLeftActions={() => swipeLeftHandler(item)} renderRightActions={() => swipeRightHandler(item)}>
-              <TouchableOpacity onPress={() => pressHandler(item)}>
-                <AutoSizeText style={{ color: 'black' }} mode={ResizeTextMode.group}>
-                  {timerSeq.name}
-                </AutoSizeText>
-              </TouchableOpacity>
-            </Swipeable>
-          </GestureHandlerRootView>
-        </View>
-      )
-    }
-
-    function renderTimerSeqList(timerSeqList, pressHandler, swipeLeftHandler, swipeRightHandler) {
-      return (
-        <View style={ timerSeqListStyle.container }>
-          <FlatList data={timerSeqList} renderItem={(item) => renderTimerSeq(item, pressHandler, swipeLeftHandler, swipeRightHandler)} keyExtractor={item => item.key}/>
-        </View>
-      )
-    }
-
     if (this.state.addSequence == true) {
       console.log("Adding new sequence")
       this.addSequence("Sequence Number new")
       this.state.addSequence = false;
-    }
+    }    
     if (this.state.addTimer == true) {
       console.log("Adding new timer" + JSON.stringify(this.editSequenceItem))
-      this.editSequenceItem.item.timer.addTimer(new Timer())
+      this.editSequenceItem.timerList.addTimer(new Timer())
       this.state.addTimer = false;
     }
 
     let mainRender = <View></View>
     if (this.state.editSequence == true) {
       mainRender =
-        <View>
-          <EditSequence control={this.updateControlRef} item={this.editSequenceItem}/>
-        </View>
+        <EditSequence control={this.updateControlRef} timerSeq={this.editSequenceItem}/>
+    } else if (this.state.selectSequence == true) {
+      mainRender =
+        <TimerSeqPlayView control={this.updateControlRef} timerSeq={this.selectSequenceItem}/>
     } else {
-      mainRender = renderTimerSeqList(this.sequenceList, this.handleSeqPressRef, this.handleSeqLeftSwipeRef, this.handleSeqRightSwipeRef)
-      this.state.sequenceDeleted = false
+      mainRender =
+        <TimerSeqListView ref={this.sequenceListViewRef}
+          timerSeqList={this.sequenceList}
+          notifyEditSeq={this.editSequenceRef}
+          notifySelect={this.selectSequenceRef}
+        />
     }
 
     return (

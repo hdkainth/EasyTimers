@@ -30,7 +30,7 @@ const timerSeqListStyle = StyleSheet.create(
       borderWidth: 1,
       borderColor: 'black',
       width: '100%',
-      height: 50
+      height: 80,
     }
   }
 )
