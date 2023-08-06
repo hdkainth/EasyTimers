@@ -6,14 +6,14 @@ class TimerSeqList {
   constructor() {
 
     this.list = [
-      { name: "Short strenching ", timerList: new TimerList(), key: 1 },
+      { name: "Short stretching ", timerList: new TimerList(), key: 1 },
       { name: "Yoga ", timerList: new TimerList(), key: 2 },
       { name: "Gym workout ", timerList: new TimerList(), key: 3 }
     ]
 
-    this.list[0].timerList.addTimer(new Timer(hours = 0, minutes = 0, secs = 3, name = "Arm stretch"))
-    this.list[0].timerList.addTimer(new Timer(hours = 0, minutes = 0, secs = 2, name = "Relax"))
-    this.list[0].timerList.addTimer(new Timer(hours = 0, minutes = 0, secs = 3, name = "Leg stretch"))
+    this.list[0].timerList.addTimer(new Timer(hours = 0, minutes = 0, secs = 8, name = "Arm stretch"))
+    this.list[0].timerList.addTimer(new Timer(hours = 0, minutes = 0, secs = 6, name = "Relax"))
+    this.list[0].timerList.addTimer(new Timer(hours = 0, minutes = 0, secs = 5, name = "Leg stretch"))
 
     // this.list[0].timerList.addTimer(new Timer(hours = 0, minutes = 0, secs = 15, name = "Arm stretch"))
     // this.list[0].timerList.addTimer(new Timer(hours = 0, minutes = 0, secs = 5, name = "Relax"))

@@ -46,6 +46,7 @@ class Timer {
     if (this.timerElapsed == this.getTimerSeconds()) {
       clearInterval(this.intervalId)
       this.intervalId = undefined
+      this.timerViewRef.notifyTimerActive(false)
       this.timerFinishNotify()
       this.timerElapsed = 0
       this.timerFinishNotify = undefined
@@ -58,6 +59,7 @@ class Timer {
     console.log("Starting timer " + this.name)
     this.timerElapsed = 0
     this.timerFinishNotify = timerFinishNotify
+    this.timerViewRef.notifyTimerActive(true)
     this.intervalId = setInterval(this.decrementTimeSecRef, 1000)
   }
 
@@ -77,12 +79,17 @@ class Timer {
       console.log("Cancelling timer " + this.name)
       clearInterval(this.intervalId)
     }
+    this.timerViewRef.notifyTimerActive(false)
     this.timerFinishNotify = undefined
     this.timerElapsed = 0
   }
 
   getTimerSeconds() {
     return ((3600 * this.hh) + (60 * this.mm) + (this.ss))
+  }
+
+  getTimerRemainingSeconds() {
+    return this.getTimerSeconds() - this.timerElapsed
   }
 
   getTimeString() {

@@ -3,6 +3,8 @@ import {View, Text, TouchableOpacity, Image} from "react-native";
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text'
+import shortBeep from '../assets/short-beep-tone.mp3'
+import { Audio } from 'expo-av';
 
 class TimerView extends Component {
 
@@ -22,6 +24,14 @@ class TimerView extends Component {
     this.deleteTimerViewRef = this.deleteTimerView.bind(this)
     this.editTimerRef = this.editTimer.bind(this)
     this.deleteTimerRef = this.deleteTimer.bind(this)
+
+    this.activeState = false
+
+    this.shortBeepSound = undefined
+    Audio.Sound.createAsync(shortBeep).then((response) => {
+      this.shortBeepSound = response
+      console.log("Expo-AV sound loaded for " + this.props.timer.name)
+    })
   }
 
   componentDidMount() {
@@ -31,10 +41,19 @@ class TimerView extends Component {
   componentWillUnmount() {
     this.props.timer.cancelTimer()
     this.props.timer.timerViewRef = undefined
-  }
 
-  notifyValueUpdate() {
-    this.setState({timerUpdated: true})
+    if (this.shortBeepSound != undefined) {
+      try {
+        this.shortBeepSound.sound.unloadAsync().then((response) => {
+          console.log("Expo-AV sound unloaded for " + this.props.timer.name + " " + JSON.stringify(response))
+          this.shortBeepSound = undefined
+        })
+      } catch (e) {
+        console.log("Expo-AV sound unload failed for " + this.props.timer.name) + " " + JSON.stringify(e)
+        this.shortBeepSound = undefined
+      }
+      
+    }
   }
 
   changeValues(values) {
@@ -44,6 +63,22 @@ class TimerView extends Component {
     this.mm = values.min.split(" ").join("")
     this.ss = values.sec.split(" ").join("")
 
+    this.setState({timerUpdated: true})
+  }
+
+  notifyValueUpdate() {
+    timeLeft = this.props.timer.getTimerRemainingSeconds()
+    console.log("Timer left: " + timeLeft)
+    if (timeLeft <= 3) {
+      if (this.shortBeepSound != undefined) {
+        this.shortBeepSound.sound.playFromPositionAsync(0)
+      }
+    }
+    this.setState({timerUpdated: true})
+  }
+
+  notifyTimerActive(state) {
+    this.activeState = state
     this.setState({timerUpdated: true})
   }
 
@@ -99,21 +134,31 @@ class TimerView extends Component {
 
   render() {
     this.state.timerUpdated = false
+
+    let timercolor = 'green'
+    let timerNameHeight = 40
+    let timerTextHeight = 50
+    if (this.activeState) {
+      timercolor = 'blue'
+      timerTextHeight = 70
+    }
+    let totalHeight = timerNameHeight + timerTextHeight + 10
+
     return (
-      <View style={{height: 100, width: '100%', borderColor: 'black', borderWidth: 2, margin:10}}>
+      <View style={{height: totalHeight, width: '100%', borderColor: 'black', borderWidth: 2, margin:10}}>
         <GestureHandlerRootView style={{borderStyle: 'solid', margin: 0, padding: 0, borderWidth: 1}}>
           <Swipeable ref={this.swipeRef}
             onSwipeableOpen={() => this.notifySwipeActivityRef(true)} onSwipeableClose={() => this.notifySwipeActivityRef(false)}
             renderLeftActions={this.editTimerViewRef} renderRightActions={this.deleteTimerViewRef}
           >
             <TouchableOpacity>
-              <View style={{ height: 40, width: '100%'}}>
+              <View style={{ height: timerNameHeight, width: '100%'}}>
                 <AutoSizeText style={{ color: 'black', alignSelf: 'flex-start' }} mode={ResizeTextMode.group}>
                   {this.props.timer.name}
                 </AutoSizeText>
               </View>
-              <View style={{ height: 50, width: '100%'}}>
-                <AutoSizeText style={{ color: 'green', alignSelf: 'flex-start'}} mode={ResizeTextMode.group}>
+              <View style={{ height: timerTextHeight, width: '100%'}}>
+                <AutoSizeText style={{ color: timercolor, alignSelf: 'flex-start'}} mode={ResizeTextMode.group}>
                 {this.props.timer.getTimeString()}
                 </AutoSizeText>
               </View>
@@ -122,7 +167,6 @@ class TimerView extends Component {
         </GestureHandlerRootView>
       </View>)
   }
-
 }
 
 export default TimerView;

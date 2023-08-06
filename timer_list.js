@@ -54,8 +54,9 @@ class TimerList extends Component {
     }
   }
 
-  playList() {
+  playList(notifyPlayDone) {
     this.activeTimer = 0
+    this.notifyPlayDone = notifyPlayDone
     if (this.activeTimer < this.timerList.length) {
       this.timerList[this.activeTimer].startTimer(this.timerCompleteNotifyRef)
     }
@@ -65,8 +66,25 @@ class TimerList extends Component {
     this.activeTimer = this.activeTimer + 1
     if (this.activeTimer == this.timerList.length) {
       this.activeTimer = undefined
+      if (this.notifyPlayDone != undefined) {
+        this.notifyPlayDone()
+      }
     } else {
       this.timerList[this.activeTimer].startTimer(this.timerCompleteNotifyRef)
+    }
+  }
+
+  pauseList() {
+    console.log("Invoking pause timer for active timer " + this.activeTimer)
+    if (this.activeTimer != undefined) {
+      this.timerList[this.activeTimer].pauseTimer()
+    }
+  }
+
+  resumeList() {
+    console.log("Invoking resume timer for active timer " + this.activeTimer)
+    if (this.activeTimer != undefined) {
+      this.timerList[this.activeTimer].resumeTimer()
     }
   }
 
