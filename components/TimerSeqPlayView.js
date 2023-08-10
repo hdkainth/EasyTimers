@@ -48,7 +48,7 @@ class TimerSeqPlayView extends Component {
   render() {
     return (
       <View>
-        <View style={{height: '80%', width: '100%'}}>
+        <View style={{height: '80%', width: '98%'}}>
           <TimerListView ref={this.timerListViewRef}
             name={this.props.timerSeq.name}
             timerList={this.props.timerSeq.timerList}

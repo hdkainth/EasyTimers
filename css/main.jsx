@@ -27,10 +27,10 @@ const timerSeqListStyle = StyleSheet.create(
       margin: 5,
       padding: 10,
       borderStyle: 'solid',
-      borderWidth: 1,
+      borderWidth: 2,
       borderColor: 'black',
-      width: '100%',
-      height: 80,
+      width: '98%',
+      height: 60,
     }
   }
 )

@@ -136,8 +136,8 @@ class TimerView extends Component {
     this.state.timerUpdated = false
 
     let timercolor = 'green'
-    let timerNameHeight = 40
-    let timerTextHeight = 50
+    let timerNameHeight = 35
+    let timerTextHeight = 40
     if (this.activeState) {
       timercolor = 'blue'
       timerTextHeight = 70
@@ -145,7 +145,7 @@ class TimerView extends Component {
     let totalHeight = timerNameHeight + timerTextHeight + 10
 
     return (
-      <View style={{height: totalHeight, width: '100%', borderColor: 'black', borderWidth: 2, margin:10}}>
+      <View style={{height: totalHeight, width: '97%', borderColor: 'black', borderWidth: 2, margin:10}}>
         <GestureHandlerRootView style={{borderStyle: 'solid', margin: 0, padding: 0, borderWidth: 1}}>
           <Swipeable ref={this.swipeRef}
             onSwipeableOpen={() => this.notifySwipeActivityRef(true)} onSwipeableClose={() => this.notifySwipeActivityRef(false)}
