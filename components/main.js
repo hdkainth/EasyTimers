@@ -82,7 +82,7 @@ class Main extends Component {
       this.state.addSequence = false;
     }    
     if (this.state.addTimer == true) {
-      console.log("Adding new timer" + JSON.stringify(this.editSequenceItem))
+      //console.log("Adding new timer" + JSON.stringify(this.editSequenceItem))
       this.editSequenceItem.timerList.addTimer(new Timer())
       this.state.addTimer = false;
     }

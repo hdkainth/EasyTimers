@@ -85,7 +85,7 @@ class Timer {
   }
 
   getTimerSeconds() {
-    return ((3600 * this.hh) + (60 * this.mm) + (this.ss))
+    return ((3600 * this.hh) + (60 * this.mm) + (this.ss * 1))
   }
 
   getTimerRemainingSeconds() {
