@@ -16,21 +16,21 @@
 
 ## Motivation <a id="motivation"></a>
 
-As a Computer Science student, I was constantly looking for ideas to apply the knowledge that I’ve leant throughout my years of study. In order to do that, I mainly used observations throughout my daily life. I noticed that my dad utilized the same set of timers during his physical therapy sessions, and my brother always repeated the same routines during his time in the gym. To help streamline these activities, I wanted to create something that helped with the efficiency of these activities. 
+As a Computer Science student, I was constantly looking for ideas to apply the knowledge that I’ve leant throughout my years of studying. In order to do that, I mainly used observations throughout my daily life. I noticed that my dad utilized the same set of timers during his physical therapy sessions, and my brother always repeated the same routines during his time in the gym. To help streamline these activities, I wanted to create something that helped with the efficiency of these activities. 
 
 ## Design goals <a id="design-goals"></a>
 
-The main idea of the design was to create different lists of timers known as “sequences” that are customizable and pre-set for different activities. Each sequence would contain a list of timers of various lengths that run either from start to end or from a chosen start point somewhere in the middle. These sequences run automatically as the user needs no input.
+The main idea of the design was to create different lists of timers known as “sequences” that are customizable and pre-set for different activities. Each sequence would contain a list of timers of various lengths that run either from start to end or from a chosen start point somewhere in the middle. These sequences run automatically as the application needs no input from the user.
 
 ## Getting started and Installing <a id="getting-started"></a>
 
-This app uses React Native and Expo platform. To get started Node.js needs to be installed on your machine. Clone the project and install all required Node.js  modules by running ```npm install```. After that use ```npm start``` to launch this application. Depending on real device or emulation you may need to have Android studio also installed to tun the application.
+This app uses React Native and the Expo platform. To get started, Node.js needs to be installed on your machine. Clone the project and install all of the required Node.js  modules by running ```npm install```. After that, use ```npm start``` to launch the application. Depending on if you're using a real device or an emulator, you may also need to have Android studio installed to tun the application.
 
 ## Basic terms <a id="basic-terms"></a>
 
 * Timer sequence – Object that contains a timer list
-* Timer list with in a sequence – Object that contains one or more timer objects in a set order with varying intervals
-* Timer instance in timer list – Object that has an hour, minute, and second value. Has the capability of counting down, pausing, and resetting. 
+* Timer list within a sequence – Object that contains one or more timer objects in a set order with varying intervals
+* Timer instance in a timer list – Object that has an hour, minute, and second value. Has the capability of counting down, pausing, and resetting. 
 
 ## Design details <a id="design-details"></a>
 
@@ -40,7 +40,7 @@ The main source of data is a list of Timer sequence objects in <span style="colo
 
 ### Screens <a id="screens"></a>
 
-The app’s interface has two items
+The app’s interface has two items:
 * Header
 * Main screen
 
