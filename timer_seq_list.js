@@ -43,7 +43,7 @@ class TimerSeqList {
   }
 
   addSequence(seqName) {
-    let newSequence = { name: seqName, timer: new TimerList(), key: this.list.length + 1}
+    let newSequence = { name: seqName, timerList: new TimerList(), key: this.list.length + 1}
     console.log(newSequence)
     this.list.push(newSequence)
   }

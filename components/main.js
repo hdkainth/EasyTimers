@@ -16,12 +16,12 @@ class Main extends Component {
     super(props);
 
     this.state = {
-      // temp timer in edit mode
-      addTimer: false,
       // control switch between main screen and edit sequence screen
       editSequence: false,
-      // control switch between main screen and select sequence screen to play timer
-      selectSequence: false
+      // control switch between main screen and play sequence screen to play timer
+      playSequence: false,
+      // force screen refresh
+      refresh: false
     }
 
     this.headerRef = React.createRef();
@@ -30,10 +30,10 @@ class Main extends Component {
     this.sequenceListViewRef = React.createRef()
 
     this.editSequenceItem = undefined
-    this.selectSequenceItem = undefined
+    this.playSequenceItem = undefined
     this.updateControlRef = this.updateControl.bind(this)
     this.editSequenceRef = this.editSequence.bind(this)
-    this.selectSequenceRef = this.selectSequence.bind(this)
+    this.playSequenceRef = this.playSequence.bind(this)
   }
 
   componentDidMount() {
@@ -45,7 +45,16 @@ class Main extends Component {
     console.log("Received update key " + key)
     console.log("Received update value " + newValue)
 
-    if (key == 'editSequence') {
+    if (key == 'addSequence') {
+      console.log("Adding new sequence")
+      this.addSequence("Sequence Number new")
+      key = 'refresh'; newValue = true
+    }
+    else if (key == 'addTimer') {
+      //console.log("Adding new timer" + JSON.stringify(this.editSequenceItem))
+      this.addTimer()
+      key = 'refresh'; newValue = true
+    } else if (key == 'editSequence') {
       if (newValue == true) {
         this.headerRef.current.setPlusMode(Header.PLUS_MODE_ADD_TIMER)
       } else {
@@ -53,6 +62,7 @@ class Main extends Component {
       }
     }
 
+    console.log("UpdateControl: Setting  " + key + " value: "  + newValue)
     this.setState({
         [key]: newValue
       }
@@ -64,42 +74,38 @@ class Main extends Component {
     this.sequenceListViewRef.current.addSequence(seqName)
   }
 
+  addTimer() {
+    this.editSequenceItem.timerList.addTimer(new Timer())
+  }
+
   editSequence(timerSeqRef) {
+    console.log("Selecting timerSeq to edit " + JSON.stringify(timerSeqRef))
     this.editSequenceItem = timerSeqRef
     this.updateControl('editSequence', true)
   }
 
-  selectSequence(timerSeqRef) {
-    //console.log("Selecting timerSeq " + JSON.stringify(timerSeqRef))
-    this.selectSequenceItem = timerSeqRef
-    this.updateControl('selectSequence', true)
+  playSequence(timerSeqRef) {
+    console.log("Selecting timerSeq to play " + JSON.stringify(timerSeqRef))
+    this.playSequenceItem = timerSeqRef
+    this.updateControl('playSequence', true)
   }
 
   render () {
-    if (this.state.addSequence == true) {
-      console.log("Adding new sequence")
-      this.addSequence("Sequence Number new")
-      this.state.addSequence = false;
-    }    
-    if (this.state.addTimer == true) {
-      //console.log("Adding new timer" + JSON.stringify(this.editSequenceItem))
-      this.editSequenceItem.timerList.addTimer(new Timer())
-      this.state.addTimer = false;
-    }
+    this.state.refresh = false
 
     let mainRender = <View></View>
     if (this.state.editSequence == true) {
       mainRender =
         <EditSequence control={this.updateControlRef} timerSeq={this.editSequenceItem}/>
-    } else if (this.state.selectSequence == true) {
+    } else if (this.state.playSequence == true) {
       mainRender =
-        <TimerSeqPlayView control={this.updateControlRef} timerSeq={this.selectSequenceItem}/>
+        <TimerSeqPlayView control={this.updateControlRef} timerSeq={this.playSequenceItem}/>
     } else {
       mainRender =
         <TimerSeqListView ref={this.sequenceListViewRef}
           timerSeqList={this.sequenceList}
           notifyEditSeq={this.editSequenceRef}
-          notifySelect={this.selectSequenceRef}
+          notifySelect={this.playSequenceRef}
         />
     }
 
